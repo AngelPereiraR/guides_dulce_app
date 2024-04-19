@@ -22,6 +22,12 @@ class SideMenuState extends ConsumerState<SideMenu> {
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
     final textStyles = Theme.of(context).textTheme;
 
+    void showSnackbar(BuildContext context, String message) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    }
+
     return Consumer(
       builder: (context, ref, child) {
         final authState = ref.watch(authProvider);
@@ -43,7 +49,8 @@ class SideMenuState extends ConsumerState<SideMenu> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 16, 10),
-              child: Text(authState.user != null ? authState.user!.name : '',
+              child: Text(
+                  authState.user!.id != 0 ? authState.user!.name : 'Usuario',
                   style: textStyles.titleSmall),
             ),
             const NavigationDrawerDestination(
@@ -60,10 +67,12 @@ class SideMenuState extends ConsumerState<SideMenu> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: authState.user != null
+              child: authState.user!.id != 0
                   ? CustomFilledButton(
                       onPressed: () {
                         ref.read(authProvider.notifier).logout();
+                        showSnackbar(
+                            context, 'La sesión se ha cerrado con éxito');
                       },
                       text: 'Cerrar sesión',
                     )

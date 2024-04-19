@@ -12,7 +12,7 @@ class AuthDataSourceImpl extends AuthDataSource {
   @override
   Future<User> checkAuthStatus(String token) async {
     try {
-      final response = await dio.get('/auth/check-status',
+      final response = await dio.get('/user/check-status',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
 
       final user = UserMapper.userJsonToEntity(response.data);
@@ -31,7 +31,7 @@ class AuthDataSourceImpl extends AuthDataSource {
   Future<User> login(String email, String password) async {
     try {
       final response = await dio
-          .post('/auth/login', data: {'email': email, 'password': password});
+          .post('/user/login', data: {'email': email, 'password': password});
 
       final user = UserMapper.userJsonToEntity(response.data);
       return user;

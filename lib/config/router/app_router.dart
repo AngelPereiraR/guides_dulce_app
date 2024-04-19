@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -5,11 +6,18 @@ import '../../presentation/providers/providers.dart';
 import '../../presentation/screens/screens.dart';
 import '../config.dart';
 
+// This is super important - otherwise, we would throw away the whole widget tree when the provider is updated.
+final navigatorKey = GlobalKey<NavigatorState>();
+// We need to have access to the previous location of the router. Otherwise, we would start from '/' on rebuild.
+GoRouter? _previousRouter;
+
 final goRouterProvider = Provider((ref) {
   final goRouterNotifier = ref.read(goRouterNotifierProvider);
 
   return GoRouter(
-    initialLocation: '/home',
+    initialLocation:
+        _previousRouter?.routerDelegate.currentConfiguration.fullPath,
+    navigatorKey: navigatorKey,
     refreshListenable: goRouterNotifier,
     routes: [
       GoRoute(
@@ -17,14 +25,14 @@ final goRouterProvider = Provider((ref) {
         builder: (context, state) => const CheckAuthStatusScreen(),
       ),
       GoRoute(
-        path: '/home',
+        path: '/',
         name: HomeScreen.name,
         builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: '/login',
         name: LoginScreen.name,
-        builder: (context, state) => LoginScreen(),
+        builder: (context, state) => const LoginScreen(),
       ),
     ],
     redirect: (context, state) {
@@ -41,7 +49,7 @@ final goRouterProvider = Provider((ref) {
 
       if (authStatus == AuthStatus.authenticated) {
         if (isGoingTo == '/login' || isGoingTo == '/splash') {
-          return '/home';
+          return '/';
         }
       }
 

@@ -14,6 +14,8 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ignore: unused_local_variable
+    final goRouterNotifier = ref.watch(goRouterNotifierProvider);
     final appRouter = ref.watch(goRouterProvider);
 
     return MaterialApp.router(

@@ -12,11 +12,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late PageController _pageController;
-
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 

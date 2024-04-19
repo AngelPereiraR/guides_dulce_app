@@ -125,7 +125,12 @@ class _LoginForm extends ConsumerWidget {
                 text: 'Ingresar',
                 onPressed: loginForm.isPosting
                     ? null
-                    : ref.read(loginFormProvider.notifier).onFormSubmit),
+                    : () {
+                        ref.read(loginFormProvider.notifier).onFormSubmit();
+                        showSnackbar(
+                            context, 'Se ha iniciado sesión correctamente.');
+                        context.pushReplacement('/');
+                      }),
           ),
         ],
       ),
