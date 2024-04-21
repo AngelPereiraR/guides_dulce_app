@@ -20,7 +20,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     required this.loginUserCallback,
   }) : super(LoginFormState());
 
-  onEmailChange(String value) {
+  onEmailChanged(String value) {
     final newEmail = Email.dirty(value);
     state = state.copyWith(
         email: newEmail, isValid: Formz.validate([newEmail, state.password]));
@@ -33,20 +33,23 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
         isValid: Formz.validate([newPassword, state.email]));
   }
 
-  onFormSubmit() async {
+  Future<bool> onFormSubmit() async {
     _touchEveryField();
 
-    if (!state.isValid) return;
+    if (!state.isValid) return false;
 
     state = state.copyWith(isPosting: true);
 
-    await loginUserCallback(state.email.value, state.password.value);
+    bool value =
+        await loginUserCallback(state.email.value, state.password.value);
 
     if (!mounted) {
-      return;
+      return false;
     }
 
     state = state.copyWith(isPosting: false);
+
+    return value;
   }
 
   _touchEveryField() {

@@ -23,14 +23,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     checkAuthStatus();
   }
 
-  Future<void> loginUser(String email, String password) async {
+  Future<bool> loginUser(String email, String password) async {
     try {
       final user = await authRepository.login(email, password);
-      _setLoggedUser(user);
+      return _setLoggedUser(user);
     } on CustomError catch (e) {
       logout(e.message);
+      return false;
     } catch (e) {
       logout('Error no controlado');
+      return false;
     }
 
     // final user = await authRepository.login(email, password);
@@ -49,7 +51,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  void _setLoggedUser(User user) async {
+  Future<bool> _setLoggedUser(User user) async {
     await keyValueStorageService.setKeyValue('token', user.token);
 
     state = state.copyWith(
@@ -57,6 +59,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       user: user,
       errorMessage: '',
     );
+
+    return true;
   }
 
   Future<void> logout([String? errorMessage]) async {

@@ -103,7 +103,7 @@ class _LoginForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
-            onChanged: ref.read(loginFormProvider.notifier).onEmailChange,
+            onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
             errorMessage:
                 loginForm.isFormPosted ? loginForm.email.errorMessage : null,
           ),
@@ -126,10 +126,15 @@ class _LoginForm extends ConsumerWidget {
                 onPressed: loginForm.isPosting
                     ? null
                     : () {
-                        ref.read(loginFormProvider.notifier).onFormSubmit();
-                        showSnackbar(
-                            context, 'Se ha iniciado sesión correctamente.');
-                        context.pushReplacement('/');
+                        Future<bool> futureIsLogged =
+                            ref.read(loginFormProvider.notifier).onFormSubmit();
+                        futureIsLogged.then((isLogged) {
+                          if (isLogged) {
+                            showSnackbar(context,
+                                'Se ha iniciado sesión correctamente.');
+                            context.pushReplacement('/');
+                          }
+                        });
                       }),
           ),
         ],
