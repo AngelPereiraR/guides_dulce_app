@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'config/config.dart';
 
+final container = ProviderContainer();
+
 void main() async {
   await Environment.initEnvironment();
 

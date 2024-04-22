@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../main.dart' as main;
 import '../../providers/providers.dart';
 import '../widgets.dart';
 
@@ -30,7 +31,7 @@ class SideMenuState extends ConsumerState<SideMenu> {
 
     return Consumer(
       builder: (context, ref, child) {
-        final authState = ref.watch(authProvider);
+        final authState = main.container.read(authProvider);
 
         return NavigationDrawer(
           elevation: 1,
@@ -50,12 +51,12 @@ class SideMenuState extends ConsumerState<SideMenu> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 16, 10),
               child: Text(
-                  authState.user!.id != 0 ? authState.user!.name : 'Usuario',
+                  authState.user?.id != 0 ? authState.user!.name : 'Usuario',
                   style: textStyles.titleSmall),
             ),
             const NavigationDrawerDestination(
               icon: Icon(Icons.inventory_outlined),
-              label: Text('Guías'),
+              label: Text('Categorías de guías'),
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
@@ -67,12 +68,15 @@ class SideMenuState extends ConsumerState<SideMenu> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: authState.user!.id != 0
+              child: authState.user?.id != 0
                   ? CustomFilledButton(
-                      onPressed: () {
-                        ref.read(authProvider.notifier).logout();
+                      onPressed: () async {
+                        await main.container
+                            .read(authProvider.notifier)
+                            .logout();
                         showSnackbar(
                             context, 'La sesión se ha cerrado con éxito');
+                        context.pushReplacement('/');
                       },
                       text: 'Cerrar sesión',
                     )

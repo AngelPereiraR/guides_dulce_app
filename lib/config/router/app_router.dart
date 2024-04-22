@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../main.dart' as main;
 import '../../presentation/providers/providers.dart';
 import '../../presentation/screens/screens.dart';
 import '../config.dart';
@@ -12,7 +13,7 @@ final navigatorKey = GlobalKey<NavigatorState>();
 GoRouter? _previousRouter;
 
 final goRouterProvider = Provider((ref) {
-  final goRouterNotifier = ref.read(goRouterNotifierProvider);
+  final goRouterNotifier = main.container.read(goRouterNotifierProvider);
 
   return GoRouter(
     initialLocation:
@@ -28,6 +29,11 @@ final goRouterProvider = Provider((ref) {
         path: '/',
         name: HomeScreen.name,
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: '/create-category',
+        name: CreateCategoryScreen.name,
+        builder: (context, state) => const CreateCategoryScreen(),
       ),
       GoRoute(
         path: '/login',

@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../main.dart' as main;
 import '../../presentation/providers/providers.dart';
 
 final goRouterNotifierProvider = Provider((ref) {
-  final authNotifier = ref.read(authProvider.notifier);
+  final authNotifier = main.container.read(authProvider.notifier);
   return GoRouterNotifier(authNotifier);
 });
 
