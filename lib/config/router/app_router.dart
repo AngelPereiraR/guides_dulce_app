@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:guides_dulce_app/presentation/screens/guides/edit_category_screen.dart';
 
 import '../../main.dart' as main;
 import '../../presentation/providers/providers.dart';
@@ -36,9 +37,26 @@ final goRouterProvider = Provider((ref) {
         builder: (context, state) => const CreateCategoryScreen(),
       ),
       GoRoute(
+        path: '/edit-category/:id',
+        name: EditCategoryScreen.name,
+        builder: (context, state) {
+          final categoryId = int.parse(state.pathParameters['id'] ?? '0');
+          return EditCategoryScreen(id: categoryId);
+        },
+      ),
+      GoRoute(
         path: '/login',
         name: LoginScreen.name,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/category/:id',
+        name: 'Category',
+        builder: (context, state) {
+          final categoryId = int.parse(state.pathParameters['id'] ?? '0');
+          return const LoginScreen();
+          // return CategoryScreen(categoryId: categoryId);
+        },
       ),
     ],
     redirect: (context, state) {

@@ -32,6 +32,28 @@ class CategoryNotifier extends StateNotifier<CategoryState> {
       rethrow;
     }
   }
+
+  Future<bool> deleteCategory(int id) async {
+    try {
+      await categoryRepository.removeCategory(id);
+      return true;
+    } on CustomError catch (e) {
+      throw Exception(e.message);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Category> getCategory(int id) async {
+    try {
+      final category = await categoryRepository.getCategory(id);
+      return category;
+    } on CustomError catch (e) {
+      throw Exception(e.message);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
 
 class CategoryState {

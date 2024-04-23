@@ -39,7 +39,28 @@ class HomeView extends ConsumerWidget {
                     children: [
                       if (categories != null)
                         for (Category category in categories)
-                          Center(child: Text(category.name)),
+                          Center(
+                              child: Column(
+                            children: [
+                              if (authNotifier.authStatus ==
+                                  AuthStatus.authenticated)
+                                CustomCategoryCard(
+                                  category: category,
+                                  userLoggedIn: true,
+                                ),
+                              if (authNotifier.authStatus ==
+                                      AuthStatus.notAuthenticated ||
+                                  authNotifier.authStatus ==
+                                      AuthStatus.checking)
+                                CustomCategoryCard(
+                                  category: category,
+                                  userLoggedIn: false,
+                                ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          )),
                       if (categories == null)
                         const Center(
                           child: Placeholder(

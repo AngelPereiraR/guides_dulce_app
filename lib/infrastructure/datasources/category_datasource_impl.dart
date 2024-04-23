@@ -39,7 +39,7 @@ class CategoryDataSourceImpl extends CategoryDataSource {
   @override
   Future<Category> getCategory(int id) async {
     try {
-      final response = await dio.post('/categories/$id');
+      final response = await dio.get('/categories/$id');
 
       final category = CategoryMapper.categoryJsonToEntity(response.data);
       return category;
@@ -88,7 +88,7 @@ class CategoryDataSourceImpl extends CategoryDataSource {
     try {
       final token = await _getToken();
       if (token != "") {
-        final response = await dio.put('/categories/$id',
+        final response = await dio.patch('/categories/$id',
             data: {'name': name},
             options: Options(headers: {'Authorization': 'Bearer $token'}));
 

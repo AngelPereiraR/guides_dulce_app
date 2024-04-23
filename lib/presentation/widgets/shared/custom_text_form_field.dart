@@ -4,6 +4,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? label;
   final String? hint;
   final String? errorMessage;
+  final String? initialValue;
   final bool obscureText;
   final TextInputType? keyboardType;
   final Function(String)? onChanged;
@@ -15,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     this.label,
     this.hint,
     this.errorMessage,
+    this.initialValue = '',
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.onChanged,
@@ -52,6 +54,7 @@ class CustomTextFormField extends StatelessWidget {
         onFieldSubmitted: onFieldSubmitted,
         obscureText: obscureText,
         keyboardType: keyboardType,
+        initialValue: initialValue,
         style: const TextStyle(fontSize: 20, color: Colors.black54),
         decoration: InputDecoration(
           floatingLabelStyle: const TextStyle(

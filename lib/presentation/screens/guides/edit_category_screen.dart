@@ -2,15 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../domain/domain.dart';
 import '../../providers/providers.dart';
 import '../../widgets/widgets.dart';
 
-class CreateCategoryScreen extends StatelessWidget {
-  static const name = 'create-category-screen';
-  const CreateCategoryScreen({super.key});
+class EditCategoryScreen extends ConsumerStatefulWidget {
+  final int id;
+  static const name = 'edit-category-screen';
+
+  const EditCategoryScreen({super.key, required this.id});
+
+  @override
+  EditCategoryState createState() => EditCategoryState();
+}
+
+class EditCategoryState extends ConsumerState<EditCategoryScreen> {
+  late Category category;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getCategory();
+  }
+
+  Future<void> getCategory() async {
+    final fetchedCategory =
+        await ref.read(categoryProvider.notifier).getCategory(widget.id);
+
+    setState(() {
+      category = fetchedCategory;
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Verificar si la categoría está cargando
+    if (_isLoading) {
+      // Si se está cargando, puedes mostrar un indicador de carga
+      return CircularProgressIndicator(); // Por ejemplo
+    }
     final size = MediaQuery.of(context).size;
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
@@ -38,7 +70,7 @@ class CreateCategoryScreen extends StatelessWidget {
                               size: 40, color: Colors.white)),
                       const Spacer(),
                       const Icon(
-                        Icons.games_outlined,
+                        Icons.edit_outlined,
                         color: Colors.white,
                         size: 100,
                       ),
@@ -61,7 +93,7 @@ class CreateCategoryScreen extends StatelessWidget {
                           topRight: Radius.circular(100),
                           topLeft: Radius.circular(100)),
                     ),
-                    child: const _CreateCategoryForm(),
+                    child: _EditCategoryForm(category),
                   )
                 ],
               ),
@@ -73,8 +105,9 @@ class CreateCategoryScreen extends StatelessWidget {
   }
 }
 
-class _CreateCategoryForm extends ConsumerWidget {
-  const _CreateCategoryForm();
+class _EditCategoryForm extends ConsumerWidget {
+  final Category category;
+  const _EditCategoryForm(this.category);
 
   void showSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -84,7 +117,7 @@ class _CreateCategoryForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoryAddForm = ref.watch(categoryAddFormProvider);
+    final categoryEditForm = ref.watch(categoryEditFormProvider);
 
     ref.listen(authProvider, (previous, next) {
       if (next.errorMessage.isEmpty) return;
@@ -98,14 +131,16 @@ class _CreateCategoryForm extends ConsumerWidget {
       child: Column(
         children: [
           const SizedBox(height: 50),
-          Text('Crear categoría de juego', style: textStyles.titleLarge),
+          Text('Editar categoría de juego', style: textStyles.titleLarge),
           const SizedBox(height: 50),
           CustomTextFormField(
             label: 'Nombre del juego',
             keyboardType: TextInputType.text,
-            onChanged: ref.read(categoryAddFormProvider.notifier).onNameChanged,
-            errorMessage: categoryAddForm.isFormPosted
-                ? categoryAddForm.name.errorMessage
+            initialValue: category.name,
+            onChanged:
+                ref.read(categoryEditFormProvider.notifier).onNameChanged,
+            errorMessage: categoryEditForm.isFormPosted
+                ? categoryEditForm.name.errorMessage
                 : null,
           ),
           const SizedBox(height: 30),
@@ -113,17 +148,17 @@ class _CreateCategoryForm extends ConsumerWidget {
             width: double.infinity,
             height: 60,
             child: CustomFilledButton(
-                text: 'Crear',
-                onPressed: categoryAddForm.isPosting
+                text: 'Editar',
+                onPressed: categoryEditForm.isPosting
                     ? null
                     : () {
-                        Future<bool> futureIsAdded = ref
-                            .read(categoryAddFormProvider.notifier)
-                            .onFormSubmit();
-                        futureIsAdded.then((isAdded) {
-                          if (isAdded) {
+                        Future<bool> futureIsEdited = ref
+                            .read(categoryEditFormProvider.notifier)
+                            .onFormSubmit(category.id);
+                        futureIsEdited.then((isEdited) {
+                          if (isEdited) {
                             showSnackbar(context,
-                                'Se ha creado la categoría correctamente.');
+                                'Se ha editado la categoría correctamente.');
                             context.pushReplacement('/');
                           }
                         });
