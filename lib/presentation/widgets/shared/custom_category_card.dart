@@ -61,18 +61,18 @@ class CustomCategoryCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    const Text(
-                      "Nº de guías: ",
-                      style: TextStyle(
+                    Text(
+                      "Nº de guías: ${category.guideCount}",
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black54,
                       ),
                     ),
                   ],
                 ),
-                if (userLoggedIn)
-                  Row(
-                    children: [
+                Row(
+                  children: [
+                    if (userLoggedIn)
                       IconButton(
                         onPressed: () async {
                           final bool? isConfirmed = await showDialog<bool>(
@@ -109,6 +109,7 @@ class CustomCategoryCard extends ConsumerWidget {
                         icon: const Icon(Icons.delete_outlined),
                         tooltip: 'Eliminar categoría de juegos',
                       ),
+                    if (userLoggedIn)
                       IconButton(
                         onPressed: () {
                           context.push('/edit-category/${category.id}');
@@ -116,8 +117,15 @@ class CustomCategoryCard extends ConsumerWidget {
                         icon: const Icon(Icons.edit_outlined),
                         tooltip: 'Editar categoría de juegos',
                       ),
-                    ],
-                  )
+                    IconButton(
+                      onPressed: () {
+                        context.push('/category/${category.id}');
+                      },
+                      icon: const Icon(Icons.games_outlined),
+                      tooltip: 'Ver guías de la categoría',
+                    ),
+                  ],
+                )
               ],
             ),
           ),
