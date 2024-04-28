@@ -35,62 +35,58 @@ class HomeView extends ConsumerWidget {
               final categories = snapshot.data;
               return Stack(
                 children: [
-                  Column(
-                    children: [
-                      if (categories != null)
-                        for (Category category in categories)
-                          Center(
-                              child: Column(
-                            children: [
-                              if (authNotifier.authStatus ==
-                                  AuthStatus.authenticated)
-                                CustomCategoryCard(
-                                  category: category,
-                                  userLoggedIn: true,
-                                ),
-                              if (authNotifier.authStatus ==
-                                      AuthStatus.notAuthenticated ||
-                                  authNotifier.authStatus ==
-                                      AuthStatus.checking)
-                                CustomCategoryCard(
-                                  category: category,
-                                  userLoggedIn: false,
-                                ),
-                              const SizedBox(
-                                height: 10,
+                  Container(
+                    margin: EdgeInsets.only(
+                        bottom:
+                            authNotifier.authStatus == AuthStatus.authenticated
+                                ? 75
+                                : 0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          if (categories != null)
+                            for (Category category in categories)
+                              Center(
+                                  child: Column(
+                                children: [
+                                  if (authNotifier.authStatus ==
+                                      AuthStatus.authenticated)
+                                    CustomCategoryCard(
+                                      category: category,
+                                      userLoggedIn: true,
+                                    ),
+                                  if (authNotifier.authStatus ==
+                                          AuthStatus.notAuthenticated ||
+                                      authNotifier.authStatus ==
+                                          AuthStatus.checking)
+                                    CustomCategoryCard(
+                                      category: category,
+                                      userLoggedIn: false,
+                                    ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              )),
+                          if (categories == null)
+                            const Center(
+                              child: Placeholder(
+                                fallbackHeight: 300,
+                                fallbackWidth: 300,
                               ),
-                            ],
-                          )),
-                      if (categories == null)
-                        const Center(
-                          child: Placeholder(
-                            fallbackHeight: 300,
-                            fallbackWidth: 300,
-                          ),
-                        )
-                    ],
+                            )
+                        ],
+                      ),
+                    ),
                   ),
                   Positioned(
                     bottom: 0,
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          if (authNotifier.authStatus ==
-                              AuthStatus.authenticated)
-                            FloatingActionButton(
-                              heroTag: 'create-guide',
-                              onPressed: () {
-                                context.push('/create-guide');
-                              },
-                              tooltip: 'Añadir nueva guía',
-                              child: const Icon(Icons.add_outlined),
-                            ),
-                          const SizedBox(
-                            width: 20,
-                          ),
                           if (authNotifier.authStatus ==
                               AuthStatus.authenticated)
                             FloatingActionButton(

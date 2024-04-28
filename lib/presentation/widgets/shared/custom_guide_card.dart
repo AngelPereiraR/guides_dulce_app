@@ -5,13 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../../domain/domain.dart';
 import '../../providers/providers.dart';
 
-class CustomCategoryCard extends ConsumerWidget {
-  final Category category;
+class CustomGuideCard extends ConsumerWidget {
+  final Guide guide;
+  final int categoryId;
   final bool userLoggedIn;
 
-  const CustomCategoryCard({
+  const CustomGuideCard({
     super.key,
-    required this.category,
+    required this.guide,
+    required this.categoryId,
     this.userLoggedIn = false,
   });
 
@@ -53,7 +55,7 @@ class CustomCategoryCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      category.name,
+                      guide.name,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -61,13 +63,6 @@ class CustomCategoryCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    Text(
-                      "Nº de guías: ${category.guideCount}",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54,
-                      ),
-                    ),
                   ],
                 ),
                 Row(
@@ -78,9 +73,9 @@ class CustomCategoryCard extends ConsumerWidget {
                           final bool? isConfirmed = await showDialog<bool>(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Eliminar categoría'),
+                              title: const Text('Eliminar guía'),
                               content: Text(
-                                  '¿Estás seguro de que quieres eliminar la categoría "${category.name}"?'),
+                                  '¿Estás seguro de que quieres eliminar la guía "${guide.name}"?'),
                               actions: <Widget>[
                                 TextButton(
                                   child: const Text('Cancelar'),
@@ -98,32 +93,25 @@ class CustomCategoryCard extends ConsumerWidget {
 
                           if (isConfirmed!) {
                             await ref
-                                .read(categoryProvider.notifier)
-                                .deleteCategory(category.id);
+                                .read(guideProvider.notifier)
+                                .deleteGuide(guide.id, categoryId);
 
                             showSnackbar(context,
-                                'Se ha eliminado la categoría correctamente.');
-                            context.pushReplacement('/');
+                                'Se ha eliminado la guía correctamente.');
+                            context.pushReplacement('/category/$categoryId');
                           }
                         },
                         icon: const Icon(Icons.delete_outlined),
-                        tooltip: 'Eliminar categoría de juegos',
+                        tooltip: 'Eliminar guía',
                       ),
                     if (userLoggedIn)
                       IconButton(
                         onPressed: () {
-                          context.push('/edit-category/${category.id}');
+                          context.push('/edit-guide/${guide.id}');
                         },
                         icon: const Icon(Icons.edit_outlined),
-                        tooltip: 'Editar categoría de juegos',
+                        tooltip: 'Editar guía',
                       ),
-                    IconButton(
-                      onPressed: () {
-                        context.push('/category/${category.id}');
-                      },
-                      icon: const Icon(Icons.games_outlined),
-                      tooltip: 'Ver guías de la categoría',
-                    ),
                   ],
                 )
               ],

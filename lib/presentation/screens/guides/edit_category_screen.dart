@@ -38,10 +38,8 @@ class EditCategoryState extends ConsumerState<EditCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Verificar si la categoría está cargando
     if (_isLoading) {
-      // Si se está cargando, puedes mostrar un indicador de carga
-      return CircularProgressIndicator(); // Por ejemplo
+      return const CircularProgressIndicator();
     }
     final size = MediaQuery.of(context).size;
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;

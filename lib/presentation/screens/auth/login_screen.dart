@@ -95,49 +95,53 @@ class _LoginForm extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: Column(
-        children: [
-          const SizedBox(height: 50),
-          Text('Iniciar Sesión', style: textStyles.titleLarge),
-          const SizedBox(height: 50),
-          CustomTextFormField(
-            label: 'Correo',
-            keyboardType: TextInputType.emailAddress,
-            onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
-            errorMessage:
-                loginForm.isFormPosted ? loginForm.email.errorMessage : null,
-          ),
-          const SizedBox(height: 30),
-          CustomTextFormField(
-            label: 'Contraseña',
-            obscureText: true,
-            onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
-            onFieldSubmitted: (_) =>
-                ref.read(loginFormProvider.notifier).onFormSubmit(),
-            errorMessage:
-                loginForm.isFormPosted ? loginForm.password.errorMessage : null,
-          ),
-          const SizedBox(height: 30),
-          SizedBox(
-            width: double.infinity,
-            height: 60,
-            child: CustomFilledButton(
-                text: 'Ingresar',
-                onPressed: loginForm.isPosting
-                    ? null
-                    : () {
-                        Future<bool> futureIsLogged =
-                            ref.read(loginFormProvider.notifier).onFormSubmit();
-                        futureIsLogged.then((isLogged) {
-                          if (isLogged) {
-                            showSnackbar(context,
-                                'Se ha iniciado sesión correctamente.');
-                            context.pushReplacement('/');
-                          }
-                        });
-                      }),
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 50),
+            Text('Iniciar Sesión', style: textStyles.titleLarge),
+            const SizedBox(height: 50),
+            CustomTextFormField(
+              label: 'Correo',
+              keyboardType: TextInputType.emailAddress,
+              onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
+              errorMessage:
+                  loginForm.isFormPosted ? loginForm.email.errorMessage : null,
+            ),
+            const SizedBox(height: 30),
+            CustomTextFormField(
+              label: 'Contraseña',
+              obscureText: true,
+              onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
+              onFieldSubmitted: (_) =>
+                  ref.read(loginFormProvider.notifier).onFormSubmit(),
+              errorMessage: loginForm.isFormPosted
+                  ? loginForm.password.errorMessage
+                  : null,
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 60,
+              child: CustomFilledButton(
+                  text: 'Ingresar',
+                  onPressed: loginForm.isPosting
+                      ? null
+                      : () {
+                          Future<bool> futureIsLogged = ref
+                              .read(loginFormProvider.notifier)
+                              .onFormSubmit();
+                          futureIsLogged.then((isLogged) {
+                            if (isLogged) {
+                              showSnackbar(context,
+                                  'Se ha iniciado sesión correctamente.');
+                              context.pushReplacement('/');
+                            }
+                          });
+                        }),
+            ),
+          ],
+        ),
       ),
     );
   }
