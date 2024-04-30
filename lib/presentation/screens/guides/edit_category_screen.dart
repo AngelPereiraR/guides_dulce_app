@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:guides_dulce_app/presentation/screens/auth/splash_screen.dart';
 
 import '../../../domain/domain.dart';
 import '../../providers/providers.dart';
@@ -19,6 +20,7 @@ class EditCategoryScreen extends ConsumerStatefulWidget {
 class EditCategoryState extends ConsumerState<EditCategoryScreen> {
   late Category category;
   bool _isLoading = true;
+  bool _isChanged = false;
 
   @override
   void initState() {
@@ -36,13 +38,28 @@ class EditCategoryState extends ConsumerState<EditCategoryScreen> {
     });
   }
 
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const CircularProgressIndicator();
+      return const SplashScreen();
     }
     final size = MediaQuery.of(context).size;
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
+    final categoryEditForm = ref.watch(categoryEditFormProvider);
+
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      showSnackbar(context, next.errorMessage);
+    });
+
+    final textStyles = Theme.of(context).textTheme;
 
     return OrientationBuilder(builder: (context, orientation) {
       return GestureDetector(
@@ -91,7 +108,61 @@ class EditCategoryState extends ConsumerState<EditCategoryScreen> {
                           topRight: Radius.circular(100),
                           topLeft: Radius.circular(100)),
                     ),
-                    child: _EditCategoryForm(category),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 50),
+                          Text('Editar categoría de juego',
+                              style: textStyles.titleLarge),
+                          const SizedBox(height: 50),
+                          CustomTextFormField(
+                            label: 'Nombre del juego',
+                            keyboardType: TextInputType.text,
+                            initialValue: category.name,
+                            onChanged: (newValue) {
+                              setState(() {
+                                _isChanged = true;
+                              });
+                              ref
+                                  .read(categoryEditFormProvider.notifier)
+                                  .onNameChanged(newValue);
+                            },
+                            errorMessage: categoryEditForm.isFormPosted
+                                ? categoryEditForm.name.errorMessage
+                                : null,
+                          ),
+                          const SizedBox(height: 30),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 60,
+                            child: CustomFilledButton(
+                                text: 'Editar',
+                                onPressed: categoryEditForm.isPosting
+                                    ? null
+                                    : () {
+                                        if (_isChanged == false) {
+                                          ref
+                                              .read(categoryEditFormProvider
+                                                  .notifier)
+                                              .onNameChanged(category.name);
+                                        }
+                                        Future<bool> futureIsEdited = ref
+                                            .read(categoryEditFormProvider
+                                                .notifier)
+                                            .onFormSubmit(category.id);
+                                        futureIsEdited.then((isEdited) {
+                                          if (isEdited) {
+                                            showSnackbar(context,
+                                                'Se ha editado la categoría correctamente.');
+                                            context.pushReplacement('/');
+                                          }
+                                        });
+                                      }),
+                          ),
+                        ],
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -100,70 +171,5 @@ class EditCategoryState extends ConsumerState<EditCategoryScreen> {
         ),
       );
     });
-  }
-}
-
-class _EditCategoryForm extends ConsumerWidget {
-  final Category category;
-  const _EditCategoryForm(this.category);
-
-  void showSnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final categoryEditForm = ref.watch(categoryEditFormProvider);
-
-    ref.listen(authProvider, (previous, next) {
-      if (next.errorMessage.isEmpty) return;
-      showSnackbar(context, next.errorMessage);
-    });
-
-    final textStyles = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: Column(
-        children: [
-          const SizedBox(height: 50),
-          Text('Editar categoría de juego', style: textStyles.titleLarge),
-          const SizedBox(height: 50),
-          CustomTextFormField(
-            label: 'Nombre del juego',
-            keyboardType: TextInputType.text,
-            initialValue: category.name,
-            onChanged:
-                ref.read(categoryEditFormProvider.notifier).onNameChanged,
-            errorMessage: categoryEditForm.isFormPosted
-                ? categoryEditForm.name.errorMessage
-                : null,
-          ),
-          const SizedBox(height: 30),
-          SizedBox(
-            width: double.infinity,
-            height: 60,
-            child: CustomFilledButton(
-                text: 'Editar',
-                onPressed: categoryEditForm.isPosting
-                    ? null
-                    : () {
-                        Future<bool> futureIsEdited = ref
-                            .read(categoryEditFormProvider.notifier)
-                            .onFormSubmit(category.id);
-                        futureIsEdited.then((isEdited) {
-                          if (isEdited) {
-                            showSnackbar(context,
-                                'Se ha editado la categoría correctamente.');
-                            context.pushReplacement('/');
-                          }
-                        });
-                      }),
-          ),
-        ],
-      ),
-    );
   }
 }

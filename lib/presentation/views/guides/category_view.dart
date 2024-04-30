@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:guides_dulce_app/presentation/providers/auth/auth_provider.dart';
-import 'package:guides_dulce_app/presentation/providers/providers.dart';
-import 'package:guides_dulce_app/presentation/screens/auth/splash_screen.dart';
 
 import '../../../main.dart' as main;
 import '../../../domain/domain.dart';
+import '../../providers/providers.dart';
+import '../../screens/screens.dart';
 import '../../widgets/widgets.dart';
 
 class CategoryView extends ConsumerWidget {
@@ -45,7 +44,7 @@ class CategoryView extends ConsumerWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        if (guides != null)
+                        if (guides!.isNotEmpty)
                           for (Guide guide in guides)
                             Center(
                                 child: Column(
@@ -66,43 +65,57 @@ class CategoryView extends ConsumerWidget {
                                     categoryId: category.id,
                                     userLoggedIn: false,
                                   ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                                const SizedBox(height: 10),
                               ],
                             )),
-                        if (guides == null)
-                          const Center(
-                            child: Placeholder(
-                              fallbackHeight: 300,
-                              fallbackWidth: 300,
+                        if (guides.isEmpty)
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (authNotifier.authStatus ==
+                                    AuthStatus.authenticated)
+                                  FloatingActionButton(
+                                    heroTag: 'create-guide',
+                                    onPressed: () {
+                                      context
+                                          .push('/create-guide/${category.id}');
+                                    },
+                                    tooltip: 'Añadir nueva guía',
+                                    child: const Icon(Icons.add_outlined),
+                                  ),
+                              ],
                             ),
-                          )
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        if (authNotifier.authStatus == AuthStatus.authenticated)
-                          FloatingActionButton(
-                            heroTag: 'create-guide',
-                            onPressed: () {
-                              context.push('/create-guide');
-                            },
-                            tooltip: 'Añadir nueva guía',
-                            child: const Icon(Icons.add_outlined),
                           ),
                       ],
                     ),
                   ),
-                )
+                ),
+                if (guides.isNotEmpty)
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (authNotifier.authStatus ==
+                              AuthStatus.authenticated)
+                            FloatingActionButton(
+                              heroTag: 'create-guide',
+                              onPressed: () {
+                                context.push('/create-guide/${category.id}');
+                              },
+                              tooltip: 'Añadir nueva guía',
+                              child: const Icon(Icons.add_outlined),
+                            ),
+                        ],
+                      ),
+                    ),
+                  )
               ],
             );
           }

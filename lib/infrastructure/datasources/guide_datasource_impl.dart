@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:guides_dulce_app/presentation/providers/auth/auth_provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../config/config.dart';
 import '../../domain/domain.dart';
@@ -115,7 +114,6 @@ class GuideDataSourceImpl extends GuideDataSource {
     }
   }
 
-  //TODO: Comprobar el funcionamiento de este método
   @override
   Future<Guide> updateGuide(
     int id,
@@ -173,16 +171,22 @@ class GuideDataSourceImpl extends GuideDataSource {
   }
 
   @override
-  Future<void> uploadArchive(File file, int id) async {
+  Future<void> uploadArchive(XFile file, int id, String type) async {
     try {
       final token = await _getToken();
       if (token != "") {
         FormData formData = FormData();
-        formData.files.add(
-            MapEntry('file', MultipartFile.fromBytes(file.readAsBytesSync())));
-        await dio.post('/guides/uploadArchive/$id',
-            data: formData,
-            options: Options(headers: {'Authorization': 'Bearer $token'}));
+        formData.files
+            .add(MapEntry('file', MultipartFile.fromFileSync(file.path)));
+        if (type == 'image') {
+          await dio.post('/guides/uploadImage/$id',
+              data: formData,
+              options: Options(headers: {'Authorization': 'Bearer $token'}));
+        } else {
+          await dio.post('/guides/uploadVideo/$id',
+              data: formData,
+              options: Options(headers: {'Authorization': 'Bearer $token'}));
+        }
       } else {
         throw InvalidToken();
       }
@@ -193,9 +197,9 @@ class GuideDataSourceImpl extends GuideDataSource {
       if (e.type == DioExceptionType.connectionTimeout) {
         throw CustomError('Revisar conexión a internet');
       }
-      throw Exception();
+      throw Exception(e.message);
     } catch (e) {
-      throw Exception();
+      throw Exception(e);
     }
   }
 

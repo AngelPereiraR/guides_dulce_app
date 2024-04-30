@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import '/domain/domain.dart';
 
@@ -20,8 +20,5 @@ abstract class GuideDataSource {
     String description,
   );
   Future<void> removeGuide(int id, int categoryId);
-  Future<void> uploadArchive(
-    File file,
-    int id,
-  );
+  Future<void> uploadArchive(XFile file, int id, String type);
 }

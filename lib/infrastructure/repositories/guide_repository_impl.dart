@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 import '../../domain/domain.dart';
 import '../infrastructure.dart';
@@ -42,7 +42,7 @@ class GuideRepositoryImpl extends GuideRepository {
   }
 
   @override
-  Future<void> uploadArchive(File file, int id) {
-    return dataSource.uploadArchive(file, id);
+  Future<void> uploadArchive(XFile file, int id, String type) {
+    return dataSource.uploadArchive(file, id, type);
   }
 }

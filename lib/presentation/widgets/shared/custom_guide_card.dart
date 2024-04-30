@@ -107,7 +107,7 @@ class CustomGuideCard extends ConsumerWidget {
                     if (userLoggedIn)
                       IconButton(
                         onPressed: () {
-                          context.push('/edit-guide/${guide.id}');
+                          context.push('/edit-guide/$categoryId/${guide.id}');
                         },
                         icon: const Icon(Icons.edit_outlined),
                         tooltip: 'Editar guía',

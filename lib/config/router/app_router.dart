@@ -50,10 +50,29 @@ final goRouterProvider = Provider((ref) {
       ),
       GoRoute(
         path: '/category/:id',
-        name: 'Category',
+        name: CategoryScreen.name,
         builder: (context, state) {
           final categoryId = int.parse(state.pathParameters['id'] ?? '0');
           return CategoryScreen(categoryId: categoryId);
+        },
+      ),
+      GoRoute(
+        path: '/create-guide/:categoryId',
+        name: CreateGuideScreen.name,
+        builder: (context, state) {
+          final categoryId =
+              int.parse(state.pathParameters['categoryId'] ?? '0');
+          return CreateGuideScreen(categoryId: categoryId);
+        },
+      ),
+      GoRoute(
+        path: '/edit-guide/:categoryId/:id',
+        name: EditGuideScreen.name,
+        builder: (context, state) {
+          final categoryId =
+              int.parse(state.pathParameters['categoryId'] ?? '0');
+          final guideId = int.parse(state.pathParameters['id'] ?? '0');
+          return EditGuideScreen(categoryId: categoryId, id: guideId);
         },
       ),
     ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../domain/domain.dart';
+import '../../../main.dart' as main;
 import '../../providers/providers.dart';
 
 class CustomCategoryCard extends ConsumerWidget {
@@ -97,6 +98,14 @@ class CustomCategoryCard extends ConsumerWidget {
                           );
 
                           if (isConfirmed!) {
+                            List<Guide> guides = await main.container
+                                .read(guideProvider.notifier)
+                                .getAllGuidesByCategoryId(category.id);
+                            for (Guide guide in guides) {
+                              await ref
+                                  .read(guideProvider.notifier)
+                                  .deleteGuide(guide.id, category.id);
+                            }
                             await ref
                                 .read(categoryProvider.notifier)
                                 .deleteCategory(category.id);

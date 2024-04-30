@@ -16,7 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     this.label,
     this.hint,
     this.errorMessage,
-    this.initialValue = '',
+    this.initialValue,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.onChanged,
