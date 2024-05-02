@@ -21,7 +21,11 @@ class HomeView extends ConsumerWidget {
         key: scaffoldKey,
         drawer: SideMenu(scaffoldKey: scaffoldKey),
         appBar: AppBar(
-          title: const Text('Categorías de guías'),
+          title: const Text(
+            'Categorías de guías',
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
         ),
         body: FutureBuilder<List<Category>>(
           future:

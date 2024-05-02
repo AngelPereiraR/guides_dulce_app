@@ -54,18 +54,25 @@ class CustomGuideCard extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      guide.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    SizedBox(
+                      width: 250,
+                      child: Tooltip(
+                        message: guide.name,
+                        child: Text(
+                          guide.name,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 3,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 5),
+                    )
                   ],
                 ),
-                Row(
+                Column(
                   children: [
                     if (userLoggedIn)
                       IconButton(
@@ -112,6 +119,13 @@ class CustomGuideCard extends ConsumerWidget {
                         icon: const Icon(Icons.edit_outlined),
                         tooltip: 'Editar guía',
                       ),
+                    TextButton(
+                      onPressed: () {
+                        context
+                            .pushReplacement('/guide/$categoryId/${guide.id}');
+                      },
+                      child: const Text('Ver guía'),
+                    ),
                   ],
                 )
               ],

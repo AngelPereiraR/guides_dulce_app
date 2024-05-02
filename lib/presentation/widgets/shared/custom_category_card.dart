@@ -53,12 +53,20 @@ class CustomCategoryCard extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      category.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    SizedBox(
+                      width: 250,
+                      child: Tooltip(
+                        message: category.name,
+                        child: Text(
+                          category.name,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -71,7 +79,7 @@ class CustomCategoryCard extends ConsumerWidget {
                     ),
                   ],
                 ),
-                Row(
+                Column(
                   children: [
                     if (userLoggedIn)
                       IconButton(
@@ -126,12 +134,11 @@ class CustomCategoryCard extends ConsumerWidget {
                         icon: const Icon(Icons.edit_outlined),
                         tooltip: 'Editar categoría de juegos',
                       ),
-                    IconButton(
+                    TextButton(
                       onPressed: () {
                         context.push('/category/${category.id}');
                       },
-                      icon: const Icon(Icons.games_outlined),
-                      tooltip: 'Ver guías de la categoría',
+                      child: const Text('Ver categoría'),
                     ),
                   ],
                 )

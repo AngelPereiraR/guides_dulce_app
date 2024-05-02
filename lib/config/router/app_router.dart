@@ -75,6 +75,16 @@ final goRouterProvider = Provider((ref) {
           return EditGuideScreen(categoryId: categoryId, id: guideId);
         },
       ),
+      GoRoute(
+        path: '/guide/:categoryId/:id',
+        name: GuideScreen.name,
+        builder: (context, state) {
+          final categoryId =
+              int.parse(state.pathParameters['categoryId'] ?? '0');
+          final guideId = int.parse(state.pathParameters['id'] ?? '0');
+          return GuideScreen(categoryId: categoryId, guideId: guideId);
+        },
+      ),
     ],
     redirect: (context, state) {
       final isGoingTo = state.matchedLocation;

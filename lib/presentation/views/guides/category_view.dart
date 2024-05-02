@@ -20,7 +20,14 @@ class CategoryView extends ConsumerWidget {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text(category.name),
+        title: Tooltip(
+          message: category.name,
+          child: Text(
+            category.name,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
+        ),
       ),
       body: FutureBuilder<List<Guide>>(
         future: main.container

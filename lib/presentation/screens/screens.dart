@@ -6,3 +6,4 @@ export 'auth/login_screen.dart';
 export 'auth/splash_screen.dart';
 export 'guides/create_guide_screen.dart';
 export 'guides/edit_guide_screen.dart';
+export 'guides/guide_screen.dart';

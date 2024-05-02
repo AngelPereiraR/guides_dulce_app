@@ -9,33 +9,37 @@ import 'package:guides_dulce_app/presentation/screens/screens.dart';
 import '../../providers/providers.dart';
 import '../../views/views.dart';
 
-class CategoryScreen extends ConsumerStatefulWidget {
-  static const name = 'category-screen';
+class GuideScreen extends ConsumerStatefulWidget {
+  static const name = 'guide-screen';
+  final int guideId;
   final int categoryId;
 
-  const CategoryScreen({super.key, required this.categoryId});
+  const GuideScreen({
+    super.key,
+    required this.guideId,
+    required this.categoryId,
+  });
 
   @override
-  CategoryScreenState createState() => CategoryScreenState();
+  GuideScreenState createState() => GuideScreenState();
 }
 
-class CategoryScreenState extends ConsumerState<CategoryScreen> {
-  late Category category;
+class GuideScreenState extends ConsumerState<GuideScreen> {
+  late Guide guide;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    getCategory();
+    getGuide();
   }
 
-  Future<void> getCategory() async {
-    final fetchedCategory = await ref
-        .read(categoryProvider.notifier)
-        .getCategory(widget.categoryId);
+  Future<void> getGuide() async {
+    final fetchedGuide =
+        await ref.read(guideProvider.notifier).getGuide(widget.guideId);
 
     setState(() {
-      category = fetchedCategory;
+      guide = fetchedGuide;
       _isLoading = false;
     });
   }
@@ -47,11 +51,11 @@ class CategoryScreenState extends ConsumerState<CategoryScreen> {
     }
     return WillPopScope(
       onWillPop: () async {
-        context.pushReplacement('/');
+        context.pushReplacement('/category/${widget.categoryId}');
         return false;
       },
       child: Scaffold(
-        body: CategoryView(category),
+        body: GuideView(guide),
       ),
     );
   }
