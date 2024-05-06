@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guides_dulce_app/presentation/widgets/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../domain/domain.dart';
@@ -73,22 +74,30 @@ class GuideViewState extends ConsumerState<GuideView> {
                           } else if (snapshot.connectionState ==
                               ConnectionState.done) {
                             return Center(
-                              child: GestureDetector(
-                                onDoubleTap: () {
-                                  setState(() {
-                                    _isFullScreen = true;
-                                  });
-                                },
-                                child: InteractiveViewer(
-                                  minScale: 1.0,
-                                  maxScale: 15.0,
-                                  child: Image.network(
-                                    widget.guide.url,
-                                    height: 400,
+                                child: Stack(
+                              children: [
+                                Image.network(
+                                  widget.guide.url,
+                                  height: 400,
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.zoom_in_outlined,
+                                      size: 50,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isFullScreen = true;
+                                      });
+                                    },
                                   ),
                                 ),
-                              ),
-                            );
+                              ],
+                            ));
                           } else {
                             return const SizedBox();
                           }
@@ -207,15 +216,16 @@ class GuideViewState extends ConsumerState<GuideView> {
                                           300), // Duración de la animación
                                   left: 140,
                                   right: 50,
-                                  bottom: 42,
+                                  bottom: 39,
                                   child: _isTapped
-                                      ? VideoProgressIndicator(
+                                      ? VideoProgressIndicatorModified(
                                           _controller!,
                                           allowScrubbing: true,
                                           colors: VideoProgressColors(
-                                            playedColor: Colors.white,
+                                            playedColor: Colors
+                                                .white, // Cambia el color jugado según tu preferencia
                                             bufferedColor:
-                                                Colors.white.withOpacity(0.5),
+                                                Colors.grey.withOpacity(0.5),
                                             backgroundColor:
                                                 Colors.grey.withOpacity(0.2),
                                           ),
@@ -269,19 +279,28 @@ class GuideViewState extends ConsumerState<GuideView> {
               )
             : widget.guide.type == 'image'
                 ? Center(
-                    child: GestureDetector(
-                      onDoubleTap: () {
-                        setState(() {
-                          _isFullScreen = false;
-                        });
-                      },
-                      child: InteractiveViewer(
-                        minScale: 1.0,
-                        maxScale: 15.0,
-                        child: Image.network(
+                    child: Stack(
+                      children: [
+                        Image.network(
                           widget.guide.url,
                         ),
-                      ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.zoom_out_outlined,
+                              size: 50,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isFullScreen = false;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 : _controller!.value.aspectRatio > 1
@@ -331,7 +350,7 @@ class GuideViewState extends ConsumerState<GuideView> {
           duration:
               const Duration(milliseconds: 300), // Duración de la animación
           left: 16,
-          bottom: 20,
+          bottom: 80,
           child: _isTapped
               ? IconButton(
                   onPressed: () {
@@ -356,7 +375,7 @@ class GuideViewState extends ConsumerState<GuideView> {
           duration:
               const Duration(milliseconds: 300), // Duración de la animación
           left: 60,
-          bottom: 20,
+          bottom: 80,
           child: _isTapped
               ? IconButton(
                   onPressed: () {
@@ -376,7 +395,7 @@ class GuideViewState extends ConsumerState<GuideView> {
           duration:
               const Duration(milliseconds: 300), // Duración de la animación
           left: 100,
-          bottom: 20,
+          bottom: 80,
           child: _isTapped
               ? IconButton(
                   onPressed: () {
@@ -393,18 +412,18 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           left: 140,
           right: 50,
-          bottom: 42,
+          bottom: 99,
           child: _isTapped
-              ? VideoProgressIndicator(
+              ? VideoProgressIndicatorModified(
                   _controller!,
                   allowScrubbing: true,
                   colors: VideoProgressColors(
-                    playedColor: Colors.white,
-                    bufferedColor: Colors.white.withOpacity(0.5),
+                    playedColor: Colors
+                        .white, // Cambia el color jugado según tu preferencia
+                    bufferedColor: Colors.grey.withOpacity(0.5),
                     backgroundColor: Colors.grey.withOpacity(0.2),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -415,7 +434,7 @@ class GuideViewState extends ConsumerState<GuideView> {
           duration:
               const Duration(milliseconds: 300), // Duración de la animación
           right: 16,
-          bottom: 20,
+          bottom: 80,
           child: _isTapped
               ? IconButton(
                   onPressed: () {
@@ -424,7 +443,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                     });
                   },
                   icon: const Icon(
-                    Icons.fullscreen,
+                    Icons.fullscreen_exit_outlined,
                     color: Colors.white,
                   ),
                 )
@@ -542,14 +561,15 @@ class GuideViewState extends ConsumerState<GuideView> {
               const Duration(milliseconds: 300), // Duración de la animación
           left: 140,
           right: 50,
-          bottom: 42,
+          bottom: 39,
           child: _isTapped
-              ? VideoProgressIndicator(
+              ? VideoProgressIndicatorModified(
                   _controller!,
                   allowScrubbing: true,
                   colors: VideoProgressColors(
-                    playedColor: Colors.white,
-                    bufferedColor: Colors.white.withOpacity(0.5),
+                    playedColor: Colors
+                        .white, // Cambia el color jugado según tu preferencia
+                    bufferedColor: Colors.grey.withOpacity(0.5),
                     backgroundColor: Colors.grey.withOpacity(0.2),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -569,7 +589,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                     });
                   },
                   icon: const Icon(
-                    Icons.fullscreen,
+                    Icons.fullscreen_exit_outlined,
                     color: Colors.white,
                   ),
                 )
