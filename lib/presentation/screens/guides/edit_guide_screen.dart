@@ -30,6 +30,7 @@ class EditGuideState extends ConsumerState<EditGuideScreen> {
   bool _isNameChanged = false;
   bool _isTypeChanged = false;
   bool _isDescriptionChanged = false;
+  bool _isVideoImageChanged = false;
 
   @override
   void initState() {
@@ -223,6 +224,9 @@ class EditGuideState extends ConsumerState<EditGuideScreen> {
                                   ref
                                       .read(guideAddImageVideoProvider.notifier)
                                       .setImageVideoType('image');
+                                  setState(() {
+                                    _isVideoImageChanged = true;
+                                  });
                                   if (image == null) {
                                     ref
                                         .read(
@@ -241,6 +245,9 @@ class EditGuideState extends ConsumerState<EditGuideScreen> {
                                   ref
                                       .read(guideAddImageVideoProvider.notifier)
                                       .setImageVideoType('video');
+                                  setState(() {
+                                    _isVideoImageChanged = true;
+                                  });
                                   if (video == null) {
                                     ref
                                         .read(
@@ -291,6 +298,42 @@ class EditGuideState extends ConsumerState<EditGuideScreen> {
                                         guideAddArchive.isPosting)
                                     ? null
                                     : () {
+                                        if (!_isVideoImageChanged) {
+                                          if (!_isNameChanged) {
+                                            ref
+                                                .read(guideEditFormProvider
+                                                    .notifier)
+                                                .onNameChanged(guide.name);
+                                          }
+                                          if (!_isTypeChanged) {
+                                            ref
+                                                .read(guideEditFormProvider
+                                                    .notifier)
+                                                .onTypeChanged(guide.type);
+                                          }
+                                          if (!_isDescriptionChanged) {
+                                            ref
+                                                .read(guideEditFormProvider
+                                                    .notifier)
+                                                .onDescriptionChanged(
+                                                    guide.description);
+                                          }
+                                          Future<bool> futureIsEdited = ref
+                                              .read(guideEditFormProvider
+                                                  .notifier)
+                                              .onFormSubmit(
+                                                  guide.id, category.id);
+                                          futureIsEdited.then(
+                                            (isEdited) async {
+                                              if (isEdited) {
+                                                showSnackbar(context,
+                                                    'Se ha editado la guía correctamente.');
+                                                context.pushReplacement(
+                                                    '/category/${category.id}');
+                                              }
+                                            },
+                                          );
+                                        }
                                         if (guideAddArchive.error ==
                                             'Sin errores') {
                                           if (guideAddArchive.type ==

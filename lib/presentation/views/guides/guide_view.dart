@@ -140,9 +140,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                                   ),
                                 ),
                                 AnimatedPositioned(
-                                  duration: const Duration(
-                                      milliseconds:
-                                          300), // Duración de la animación
+                                  duration: const Duration(milliseconds: 300),
                                   left: 16,
                                   bottom: 20,
                                   child: _isTapped
@@ -167,9 +165,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                                       : const SizedBox(),
                                 ),
                                 AnimatedPositioned(
-                                  duration: const Duration(
-                                      milliseconds:
-                                          300), // Duración de la animación
+                                  duration: const Duration(milliseconds: 300),
                                   left: 60,
                                   bottom: 20,
                                   child: _isTapped
@@ -179,6 +175,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                                               _controller!.seekTo(_controller!
                                                       .value.position -
                                                   const Duration(seconds: 5));
+                                              _controller!.play();
                                             });
                                           },
                                           icon: const Icon(
@@ -189,9 +186,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                                       : const SizedBox(),
                                 ),
                                 AnimatedPositioned(
-                                  duration: const Duration(
-                                      milliseconds:
-                                          300), // Duración de la animación
+                                  duration: const Duration(milliseconds: 300),
                                   left: 100,
                                   bottom: 20,
                                   child: _isTapped
@@ -201,6 +196,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                                               _controller!.seekTo(_controller!
                                                       .value.position +
                                                   const Duration(seconds: 5));
+                                              _controller!.play();
                                             });
                                           },
                                           icon: const Icon(
@@ -211,19 +207,16 @@ class GuideViewState extends ConsumerState<GuideView> {
                                       : const SizedBox(),
                                 ),
                                 AnimatedPositioned(
-                                  duration: const Duration(
-                                      milliseconds:
-                                          300), // Duración de la animación
-                                  left: 140,
+                                  duration: const Duration(milliseconds: 300),
+                                  left: 120,
                                   right: 50,
-                                  bottom: 39,
+                                  bottom: 20,
                                   child: _isTapped
                                       ? VideoProgressIndicatorModified(
                                           _controller!,
                                           allowScrubbing: true,
                                           colors: VideoProgressColors(
-                                            playedColor: Colors
-                                                .white, // Cambia el color jugado según tu preferencia
+                                            playedColor: Colors.white,
                                             bufferedColor:
                                                 Colors.grey.withOpacity(0.5),
                                             backgroundColor:
@@ -235,9 +228,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                                       : const SizedBox(),
                                 ),
                                 AnimatedPositioned(
-                                  duration: const Duration(
-                                      milliseconds:
-                                          300), // Duración de la animación
+                                  duration: const Duration(milliseconds: 300),
                                   right: 16,
                                   bottom: 20,
                                   child: _isTapped
@@ -347,8 +338,7 @@ class GuideViewState extends ConsumerState<GuideView> {
           ),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           left: 16,
           bottom: 80,
           child: _isTapped
@@ -372,8 +362,7 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           left: 60,
           bottom: 80,
           child: _isTapped
@@ -392,8 +381,7 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           left: 100,
           bottom: 80,
           child: _isTapped
@@ -413,16 +401,15 @@ class GuideViewState extends ConsumerState<GuideView> {
         ),
         AnimatedPositioned(
           duration: const Duration(milliseconds: 300),
-          left: 140,
+          left: 120,
           right: 50,
-          bottom: 99,
+          bottom: 80,
           child: _isTapped
               ? VideoProgressIndicatorModified(
                   _controller!,
                   allowScrubbing: true,
                   colors: VideoProgressColors(
-                    playedColor: Colors
-                        .white, // Cambia el color jugado según tu preferencia
+                    playedColor: Colors.white,
                     bufferedColor: Colors.grey.withOpacity(0.5),
                     backgroundColor: Colors.grey.withOpacity(0.2),
                   ),
@@ -431,8 +418,7 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           right: 16,
           bottom: 80,
           child: _isTapped
@@ -492,8 +478,7 @@ class GuideViewState extends ConsumerState<GuideView> {
           ),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           left: 16,
           bottom: 20,
           child: _isTapped
@@ -517,8 +502,7 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           left: 60,
           bottom: 20,
           child: _isTapped
@@ -537,8 +521,7 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           left: 100,
           bottom: 20,
           child: _isTapped
@@ -557,18 +540,16 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
-          left: 140,
+          duration: const Duration(milliseconds: 300),
+          left: 130,
           right: 50,
-          bottom: 39,
+          bottom: 20,
           child: _isTapped
               ? VideoProgressIndicatorModified(
                   _controller!,
                   allowScrubbing: true,
                   colors: VideoProgressColors(
-                    playedColor: Colors
-                        .white, // Cambia el color jugado según tu preferencia
+                    playedColor: Colors.white,
                     bufferedColor: Colors.grey.withOpacity(0.5),
                     backgroundColor: Colors.grey.withOpacity(0.2),
                   ),
@@ -577,8 +558,7 @@ class GuideViewState extends ConsumerState<GuideView> {
               : const SizedBox(),
         ),
         AnimatedPositioned(
-          duration:
-              const Duration(milliseconds: 300), // Duración de la animación
+          duration: const Duration(milliseconds: 300),
           right: 16,
           bottom: 20,
           child: _isTapped

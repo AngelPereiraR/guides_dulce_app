@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoProgressIndicatorModified extends StatefulWidget {
-  /// Construct an instance that displays the play/buffering status of the video
-  /// controlled by [controller].
-  ///
-  /// Defaults will be used for everything except [controller] if they're not
-  /// provided. [allowScrubbing] defaults to false, and [padding] will default
-  /// to `top: 5.0`.
   const VideoProgressIndicatorModified(
     this.controller, {
     super.key,
@@ -16,25 +10,9 @@ class VideoProgressIndicatorModified extends StatefulWidget {
     this.padding = const EdgeInsets.only(top: 5.0),
   });
 
-  /// The [VideoPlayerController] that actually associates a video with this
-  /// widget.
   final VideoPlayerController controller;
-
-  /// The default colors used throughout the indicator.
-  ///
-  /// See [VideoProgressColors] for default values.
   final VideoProgressColors colors;
-
-  /// When true, the widget will detect touch input and try to seek the video
-  /// accordingly. The widget ignores such input when false.
-  ///
-  /// Defaults to false.
   final bool allowScrubbing;
-
-  /// This allows for visual padding around the progress indicator that can
-  /// still detect gestures via [allowScrubbing].
-  ///
-  /// Defaults to `top: 5.0`.
   final EdgeInsets padding;
 
   @override
@@ -44,15 +22,6 @@ class VideoProgressIndicatorModified extends StatefulWidget {
 
 class _VideoProgressIndicatorModifiedState
     extends State<VideoProgressIndicatorModified> {
-  _VideoProgressIndicatorModifiedState() {
-    listener = () {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    };
-  }
-
   late VoidCallback listener;
 
   VideoPlayerController get controller => widget.controller;
@@ -62,6 +31,12 @@ class _VideoProgressIndicatorModifiedState
   @override
   void initState() {
     super.initState();
+    listener = () {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    };
     controller.addListener(listener);
   }
 
@@ -86,25 +61,15 @@ class _VideoProgressIndicatorModifiedState
         }
       }
 
-      final double bufferedValue = maxBuffering / duration;
-      final double playedValue = position / duration;
-
-      progressIndicator = Stack(
-        fit: StackFit.passthrough,
-        children: <Widget>[
-          LinearProgressIndicator(
-            value: bufferedValue,
-            minHeight: 10,
-            valueColor: AlwaysStoppedAnimation<Color>(colors.bufferedColor),
-            backgroundColor: colors.backgroundColor,
-          ),
-          LinearProgressIndicator(
-            value: playedValue,
-            minHeight: 10,
-            valueColor: AlwaysStoppedAnimation<Color>(colors.playedColor),
-            backgroundColor: Colors.transparent,
-          ),
-        ],
+      progressIndicator = Slider(
+        min: 0.0,
+        max: duration.toDouble(),
+        value: position.toDouble(),
+        onChanged: (value) {
+          controller.seekTo(Duration(milliseconds: value.toInt()));
+        },
+        activeColor: colors.playedColor,
+        inactiveColor: colors.bufferedColor,
       );
     } else {
       progressIndicator = LinearProgressIndicator(
@@ -124,5 +89,36 @@ class _VideoProgressIndicatorModifiedState
     } else {
       return paddedProgressIndicator;
     }
+  }
+}
+
+class VideoScrubber extends StatelessWidget {
+  final VideoPlayerController controller;
+  final Widget child;
+
+  const VideoScrubber({
+    super.key,
+    required this.controller,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onHorizontalDragUpdate: (details) {
+        final position = controller.value.position;
+        final duration = controller.value.duration;
+        final newPosition =
+            position + Duration(seconds: details.primaryDelta!.round());
+        if (newPosition < Duration.zero) {
+          controller.seekTo(Duration.zero);
+        } else if (newPosition > duration) {
+          controller.seekTo(duration);
+        } else {
+          controller.seekTo(newPosition);
+        }
+      },
+      child: child,
+    );
   }
 }
