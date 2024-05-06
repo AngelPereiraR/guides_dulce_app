@@ -32,6 +32,14 @@ class GuideViewState extends ConsumerState<GuideView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    if (widget.guide.type == 'video') {
+      _controller!.dispose();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
