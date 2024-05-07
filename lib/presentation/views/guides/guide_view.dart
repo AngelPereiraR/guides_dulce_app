@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,6 +52,20 @@ class GuideViewState extends ConsumerState<GuideView> {
       DeviceOrientation.landscapeRight,
     ]);
 
+    Future<Size> getImageDimensions(String url) async {
+      Completer<Size> completer = Completer();
+      Image image = Image.network(url);
+
+      image.image.resolve(const ImageConfiguration()).addListener(
+        ImageStreamListener((ImageInfo info, bool _) {
+          completer.complete(
+              Size(info.image.width.toDouble(), info.image.height.toDouble()));
+        }),
+      );
+
+      return completer.future;
+    }
+
     return Scaffold(
         key: scaffoldKey,
         appBar: !_isFullScreen
@@ -71,7 +87,7 @@ class GuideViewState extends ConsumerState<GuideView> {
                     const SizedBox(height: 10),
                     if (widget.guide.type == 'image')
                       FutureBuilder(
-                        future: Future.delayed(const Duration(milliseconds: 1)),
+                        future: getImageDimensions(widget.guide.url),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -81,12 +97,17 @@ class GuideViewState extends ConsumerState<GuideView> {
                             );
                           } else if (snapshot.connectionState ==
                               ConnectionState.done) {
+                            double imageWidth = snapshot.data!.width;
+                            double containerWidth =
+                                imageWidth > MediaQuery.of(context).size.width
+                                    ? 500
+                                    : imageWidth;
                             return Center(
                                 child: Stack(
                               children: [
                                 Image.network(
                                   widget.guide.url,
-                                  height: 400,
+                                  width: containerWidth,
                                 ),
                                 Positioned(
                                   bottom: 0,
